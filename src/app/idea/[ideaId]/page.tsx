@@ -1,37 +1,40 @@
-"use client";
-
-import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { createSupabaseServer } from "@/utils/supabase/server";
+import { notFound } from "next/navigation";
 
-export default function IdeaDetail() {
-  const [title, setTitle] = useState("");
-  const [prompt, setPrompt] = useState("");
+const IdeaDetail = async ({ params }: { params: { ideaId: string } }) => {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("ideas")
+    .select("*")
+    .eq("id", params.ideaId)
+    .single();
+
+  if (error || !data) return notFound();
 
   return (
     <div className="p-10 max-w-[1000px] mx-auto">
       <div className="flex justify-between items-center">
-        <p className="text-2xl font-bold">アイデアの編集</p>
+        <p className="text-2xl font-bold">ケースの編集</p>
         <Button>保存</Button>
       </div>
-      <div className="mt-10 space-y-2">
-        <div>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="タイトルを入力してください"
-          />
+      <div className="mt-10 space-y-10">
+        <div className="text-2xl font-bold">{data.title}</div>
+        <div className="space-y-2">
+          <p className="font-bold text-lg">内容</p>
+          <p className="whitespace-pre-wrap border p-10 text-sm leading-relaxed max-h-[500px] overflow-y-auto">
+            {data.content}
+          </p>
         </div>
-        <div>
-          <Textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="記事の内容を入力してください"
-            className="min-h-[200px]"
-          />
+        <div className="space-y-2">
+          <p className="font-bold text-lg">アウトライン</p>
+          <p className="whitespace-pre-wrap border p-10 text-sm leading-relaxed max-h-[300px] overflow-y-auto">
+            {data.outline}
+          </p>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default IdeaDetail;

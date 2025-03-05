@@ -62,6 +62,7 @@ export type Database = {
           created_at: string
           id: string
           is_good: boolean | null
+          outline: string | null
           title: string | null
         }
         Insert: {
@@ -70,6 +71,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_good?: boolean | null
+          outline?: string | null
           title?: string | null
         }
         Update: {
@@ -78,6 +80,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_good?: boolean | null
+          outline?: string | null
           title?: string | null
         }
         Relationships: [
