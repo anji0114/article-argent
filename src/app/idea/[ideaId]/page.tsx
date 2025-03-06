@@ -2,12 +2,18 @@ import { Button } from "@/components/ui/button";
 import { createSupabaseServer } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 
-const IdeaDetail = async ({ params }: { params: { ideaId: string } }) => {
+type IdeaDetailProps = {
+  params: Promise<{ ideaId: string }>;
+};
+
+const IdeaDetail = async ({ params }: IdeaDetailProps) => {
   const supabase = await createSupabaseServer();
+  const { ideaId } = await params;
+
   const { data, error } = await supabase
     .from("ideas")
     .select("*")
-    .eq("id", params.ideaId)
+    .eq("id", ideaId)
     .single();
 
   if (error || !data) return notFound();
